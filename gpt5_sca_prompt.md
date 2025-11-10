@@ -331,7 +331,7 @@ After outputting the error message, **DO NOT** proceed with any analysis steps. 
 ## Output Format Specifications (MUST FOLLOW)
 
 1. **Markdown Headers:** Use H1 (`#`) for main sections, H2 (`##`) for subsections, H3 (`###`) for sub-subsections
-2. **Tables:** Use pipe-delimited markdown tables with header row. Sort alphabetically by Component name (case-insensitive), then by Version.
+2. **Tables:** ALL tables MUST be rendered as proper pipe-delimited markdown tables with header row and separator row (e.g., `|---|---|`). NEVER output tables as plain text with pipe characters. Sort alphabetically by Component name (case-insensitive), then by Version.
 3. **Code Blocks:** Use triple backticks with language identifier (e.g., ` ```json `)
 4. **File Paths:** Always relative to repository root, use forward slashes (e.g., `package.json`, `src/utils/helper.js`)
 5. **Dates:** ISO 8601 format (YYYY-MM-DD)
@@ -355,28 +355,32 @@ After outputting the error message, **DO NOT** proceed with any analysis steps. 
 3. **SBOM (CycloneDX JSON 1.5)** embedded in a fenced JSON block labeled `cyclonedx.json`. Include `bomFormat`, `specVersion`, `version`, `metadata`, `components`, `dependencies`, `licenses`. Components sorted alphabetically by `name`, then by `version`.
 
 4. **Vulnerability Report (Markdown)**
-   - Table: `Component | Version | Vulnerability | Source (OSV/NVD) | Severity | CVSS Score | Affected Range | Reachability Summary | Fix Available | Recommendation`.
+   - Columns: `Component | Version | Vulnerability | Source (OSV/NVD) | Severity | CVSS Score | Affected Range | Reachability Summary | Fix Available | Recommendation`.
    - Sort alphabetically by Component name (case-insensitive), then by Version, then by CVSS score (descending).
    - Add narrative analysis discussing exploitability and priority.
 
 5. **License Compliance Report (Markdown)**
-   - Table: `Component | License | Obligations | Compatibility Risk | Required Actions`.
+   - Columns: `Component | License | Obligations | Compatibility Risk | Required Actions`.
    - Sort alphabetically by Component name (case-insensitive).
 
 6. **Secrets & Sensitive Data Findings (Markdown)**
-   - Table: `File Path (Relative) | Line Number | Pattern Type | Redacted Sample | Severity | Immediate Action`.
+   - Columns: `File Path (Relative) | Line Number | Pattern Type | Redacted Sample | Severity | Immediate Action`.
    - Sort alphabetically by File Path, then by Line Number.
    - Include immediate containment steps.
    - **Note:** Git history secrets are reported separately in Git History Analysis Report.
 
 7. **Git History Analysis Report (Markdown)** (if `.git` present)
-   - **Branch Name Analysis Table:** `Branch Name | Pattern Type | Issue Category | Risk Level | Recommendation`
+   - **Branch Name Analysis Table:**
+     - Columns: `Branch Name | Pattern Type | Issue Category | Risk Level | Recommendation`
      - Sort alphabetically by Branch Name.
-   - **Commit Message Analysis Table:** `Commit Hash | Commit Date | Branch | Commit Message (Excerpt) | Pattern Type | Issue Category | Risk Level | Recommendation`
+   - **Commit Message Analysis Table:**
+     - Columns: `Commit Hash | Commit Date | Branch | Commit Message (Excerpt) | Pattern Type | Issue Category | Risk Level | Recommendation`
      - Sort chronologically by Commit Date (oldest first), then by Commit Hash.
-   - **Commit File Changes Analysis Table:** `Commit Hash | Commit Date | Branch | Files Changed | Pattern Type | Issue Category | Risk Level | Recommendation`
+   - **Commit File Changes Analysis Table:**
+     - Columns: `Commit Hash | Commit Date | Branch | Files Changed | Pattern Type | Issue Category | Risk Level | Recommendation`
      - Sort chronologically by Commit Date (oldest first), then by Commit Hash.
-   - **Commit Pattern Analysis Table:** `Commit Hash | Commit Date | Branch | Pattern Type | Description | Files Affected | Risk Level | Recommendation`
+   - **Commit Pattern Analysis Table:**
+     - Columns: `Commit Hash | Commit Date | Branch | Pattern Type | Description | Files Affected | Risk Level | Recommendation`
      - Sort chronologically by Commit Date (oldest first), then by Commit Hash.
    - Include narrative analysis discussing:
      - Overall git history security posture
@@ -387,16 +391,20 @@ After outputting the error message, **DO NOT** proceed with any analysis steps. 
    - If `.git` is not present, note: "Git history not available (`.git` directory not found in ZIP archive)."
 
 8. **Containers & OS Packages (Markdown)**
-   - Table: `Dockerfile Path | Base Image | Pinned Digest | Package Manager | Notable CVEs | Hardening Status | Recommendations`.
+   - Columns: `Dockerfile Path | Base Image | Pinned Digest | Package Manager | Notable CVEs | Hardening Status | Recommendations`.
    - Sort alphabetically by Dockerfile Path.
    - Include base image lineage, package manager, pinned status, notable CVEs (from internet lookup when available, or "lookup failed" if lookup was attempted but failed), and hardening checklist.
 
 9. **Supply‑Chain & CI/CD Review (Markdown)**
-   - Tables for:
-     - Pinning status: `Ecosystem | Component | Version Type | Pinned Status | Risk Level`
-     - CI/CD configs: `Config Path | Platform | Permissions | Token Usage | Signing | Provenance | Risks`
-     - Risky scripts: `Script Path | Line Number | Risk Type | Description | Recommendation`
-   - Sort each table alphabetically by first column.
+   - **Pinning Status Table:**
+     - Columns: `Ecosystem | Component | Version Type | Pinned Status | Risk Level`
+     - Sort alphabetically by Ecosystem, then Component.
+   - **CI/CD Configs Table:**
+     - Columns: `Config Path | Platform | Permissions | Token Usage | Signing | Provenance | Risks`
+     - Sort alphabetically by Config Path.
+   - **Risky Scripts Table:**
+     - Columns: `Script Path | Line Number | Risk Type | Description | Recommendation`
+     - Sort alphabetically by Script Path.
 
 10. **Appendix (Markdown)**
    - Methodology, assumptions, evidence references, completeness verification checklist.
